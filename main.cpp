@@ -115,8 +115,6 @@ void Finish()
 {
 	// TODO 6:
 	// Stop and free the music and fx
-	Mix_FreeMusic(g.music);
-	Mix_FreeChunk(g.laser);
 	
 	// TODO 3:
 	// Close the audio library
@@ -215,19 +213,17 @@ void Draw()
 	SDL_RenderClear(g.renderer);
 
 	SDL_Rect target;
-	
+
 	// Draw the background and scroll --
-	//  TODO 9: scroll the background
+	// TODO 9: scroll the background
 	// you should move target.x over time
 	// Remember that you have to draw the
 	// background twice to fake repetition
-	
-		target.x = 0;
-		target.y = 0;
-		target.w = g.background_width;
-		target.h = SCREEN_HEIGHT;
-		
-	
+
+	target.x = 0;
+	target.y = 0;
+	target.w = g.background_width;
+	target.h = SCREEN_HEIGHT;
 
 	SDL_RenderCopy(g.renderer, g.background, NULL, &target);
 
