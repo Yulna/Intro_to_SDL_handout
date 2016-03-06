@@ -24,6 +24,7 @@
 #define SCREEN_WIDTH 1024
 #define SCREEN_HEIGHT 768
 #define SCROLL_SPEED 5
+#define SCROLL_SPEED_TURBO 10
 #define SHIP_SPEED 3
 #define NUM_SHOTS 32
 #define SHOT_SPEED 5
@@ -56,7 +57,7 @@ struct globals
 	SDL_Texture* shot;
 	projectile shots[NUM_SHOTS];
 	int last_shot;
-	bool fire, up, down, left, right;
+	bool fire, up, down, left, right, turbo;
 	KEY_STATE* keyboard;
 	// TODO 4:
 	// Add pointers to store music and the laser fx
@@ -157,6 +158,7 @@ bool CheckInput()
 	g.left = g.keyboard[SDL_SCANCODE_LEFT] == KEY_REPEAT;
 	g.right = g.keyboard[SDL_SCANCODE_RIGHT] == KEY_REPEAT;
 	g.fire = g.keyboard[SDL_SCANCODE_SPACE] == KEY_DOWN;
+	g.turbo = g.keyboard[SDL_SCANCODE_LSHIFT] == KEY_REPEAT;
 
 	return true;
 }
@@ -218,36 +220,58 @@ void Draw()
 
 	SDL_Rect target;
 	
-	// Draw the background and scroll --
-	//  TODO 9: scroll the background
-	// you should move target.x over time
-	// Remember that you have to draw the
-	// background twice to fake repetition
+	if (g.turbo){
+		target.x = g.backround_movement;
+		target.y = 0;
+		target.w = g.background_width;
+		target.h = SCREEN_HEIGHT;
+		g.backround_movement -= SCROLL_SPEED_TURBO;
+
+		if (target.x <= -g.background_width)
+			g.backround_movement = 0;
+
+		SDL_RenderCopy(g.renderer, g.background, NULL, &target);
+
+		SDL_Rect target2;
+
+		target2.x = g.background_width + g.backround_movement;
+		target2.y = 0;
+		target2.w = g.background_width;
+		target2.h = SCREEN_HEIGHT;
+		g.backround_movement -= SCROLL_SPEED_TURBO;
+
+		SDL_RenderCopy(g.renderer, g.background, NULL, &target2);
+
+	}
+
+	else{
+		// Draw the background and scroll --
+		//  TODO 9: scroll the background
+		// you should move target.x over time
+		// Remember that you have to draw the
+		// background twice to fake repetition
 
 		target.x = g.backround_movement;
 		target.y = 0;
 		target.w = g.background_width;
 		target.h = SCREEN_HEIGHT;
 		g.backround_movement -= SCROLL_SPEED;
-		
+
 		if (target.x <= -g.background_width)
 			g.backround_movement = 0;
-	
 
-	SDL_RenderCopy(g.renderer, g.background, NULL, &target);
+		SDL_RenderCopy(g.renderer, g.background, NULL, &target);
 
+		SDL_Rect target2;
 
-	SDL_Rect target2;
+		target2.x = g.background_width + g.backround_movement;
+		target2.y = 0;
+		target2.w = g.background_width;
+		target2.h = SCREEN_HEIGHT;
+		g.backround_movement -= SCROLL_SPEED;
 
-	target2.x = g.background_width + g.backround_movement;
-	target2.y = 0;
-	target2.w = g.background_width;
-	target2.h = SCREEN_HEIGHT;
-	g.backround_movement -= SCROLL_SPEED;
-
-
-	SDL_RenderCopy(g.renderer, g.background, NULL, &target2);
-	
+		SDL_RenderCopy(g.renderer, g.background, NULL, &target2);
+	}
 
 
 	// Draw the ship --
