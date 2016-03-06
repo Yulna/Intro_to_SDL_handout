@@ -63,6 +63,7 @@ struct globals
 	Mix_Chunk* laser;
 	Mix_Music* music;
 	int scroll;
+	int backround_movement;
 } g;
 
 // ----------------------------------------------------------------
@@ -108,6 +109,7 @@ void Start()
 	g.last_shot = 0;
 	g.keyboard = (KEY_STATE*)malloc(sizeof(KEY_STATE) * MAX_KEYS);
 	memset(g.keyboard, KEY_IDLE, MAX_KEYS);
+	g.backround_movement = 0;
 }
 
 // ----------------------------------------------------------------
@@ -221,15 +223,31 @@ void Draw()
 	// you should move target.x over time
 	// Remember that you have to draw the
 	// background twice to fake repetition
-	
-		target.x = 0;
+
+		target.x = g.backround_movement;
 		target.y = 0;
 		target.w = g.background_width;
 		target.h = SCREEN_HEIGHT;
+		g.backround_movement -= SCROLL_SPEED;
 		
+		if (target.x <= -g.background_width)
+			g.backround_movement = 0;
 	
 
 	SDL_RenderCopy(g.renderer, g.background, NULL, &target);
+
+
+	SDL_Rect target2;
+
+	target2.x = g.background_width + g.backround_movement;
+	target2.y = 0;
+	target2.w = g.background_width;
+	target2.h = SCREEN_HEIGHT;
+	g.backround_movement -= SCROLL_SPEED;
+
+
+	SDL_RenderCopy(g.renderer, g.background, NULL, &target2);
+	
 
 
 	// Draw the ship --
