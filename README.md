@@ -1,3 +1,3 @@
 # SDL Intro
 
-Simple game to prqactise the use of SDL
+Simple game to practise the use of SDL
